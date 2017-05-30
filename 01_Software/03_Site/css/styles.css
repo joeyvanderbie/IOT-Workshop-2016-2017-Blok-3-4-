@@ -1,0 +1,40 @@
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
+.navbar-brand{
+	font-family: "Unica One";
+	font-size: 32px;
+	font-style: bold;
+} 
+.pixel-row {
+	display:flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.pixel {
+	height: 80px;
+	width: 80px;
+	margin-left:5px;
+	margin-right:5px;
+	margin-top:10px;
+	color:white;
+}
+
+.pixel-selected {
+	border-color: blue;
+
+}
+
+.pixel-hover {
+	border-color: orange;
+}
+
+.pixel-disabled {
+
+}
+
+.pixel-grid {
+	padding: 40px;
+}

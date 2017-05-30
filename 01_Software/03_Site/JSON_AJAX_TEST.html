@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<body>
+<div id="txtHint"><b>Person info will be listed here...</b></div>
+</body>
+
+<script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+var o;
+$(document).ready(function() 
+{
+//var users;
+	setInterval(function() 
+	{
+	
+	function checkchip(){
+	for (var i =0; i <= 35; i++){
+		if ( typeof users[i].chipid === 'undefined' || !users[i].chipid){
+		} else {
+		console.log(users[i].chipid);
+		}
+		}
+	}
+		function callback(msg)
+		{
+			users = JSON.parse(msg);
+			//console.log(JSON.stringify(users));
+			checkchip();
+		}
+		o = $.ajax({type:"GET", url:"getuser.php"}).done(callback).fail(function(msg){console.log("ka niet");});
+		
+		
+		
+	},2000);
+});
+</script>
+</head>
+
+
+</html>

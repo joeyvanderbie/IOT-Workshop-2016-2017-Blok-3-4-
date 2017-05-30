@@ -1,0 +1,26 @@
+{
+  "name": "pixelartgrid",
+  "version": "1.0.0",
+  "description": "Pixel Art Grid View for the IoT Workshop.",
+  "main": "jquery-3.2.1.min.js",
+  "dependencies": {
+    "angular-bootstrap-colorpicker": "^3.0.31"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kostis95/IOT-Workshop-2016-2017-Blok-3-4-.git"
+  },
+  "keywords": [
+    "IoT"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kostis95/IOT-Workshop-2016-2017-Blok-3-4-/issues"
+  },
+  "homepage": "https://github.com/kostis95/IOT-Workshop-2016-2017-Blok-3-4-#readme"
+}
