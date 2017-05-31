@@ -10,28 +10,36 @@
   </head>
   <body>
 
-  <script src="node_modules/angular/angular.js"></script>
-
-<script src="js/pixelgrid.js"></script>
- <script>
-        var app = angular.module('myApp',[]);
-
-        app.directive('myDirective',function(){
-
-            return function(scope, element,attrs) {
-                element.bind('click',function() {alert('click')});
-            };
-
-        });
-    </script>
+  <script src="js/jscolor.js"></script>
+  <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
 
   <nav class="navbar navbar-light bg-faded">
-  <a class="navbar-brand" href="#">
-   Pixel Art
-  </a>
-</nav>
+	  <a class="navbar-brand" href="#">
+	   Pixel Art
+	  </a>
+  </nav>
 
-  <div class="container pixel-grid text-center">
+<div class="row">
+  <div class="col-3 settings-panel" id="all">
+  <div class="form-group">
+	  <label for="usr">Enter your chip-ID!</label>
+	  <input type="text" class="form-control" id="chip-id" placeholder="e.g. 1111">
+  </div>
+  <input class="form-control jscolor{value:'ab2567'}" onchange="update(this.jscolor)">
+  <script>
+	function update(jscolor) {
+	    // 'jscolor' instance can be used as a string
+	    document.getElementById('11').style.backgroundColor = '#' + jscolor;
+    	console.log(<?= json_encode('NOT WORKING'); ?>);
+    }
+</script>
+
+  <button class="btn btn-primary" >Submit</button>
+  </div>
+
+  
+
+  <div class="container pixel-grid text-center col-9">
   	<?php 
   	$maxID = 6*6-1;
   	$count = 0;
@@ -45,26 +53,10 @@
 		echo "</div>";
 	} 
 	?>
+	</div>
 </div>
 
-<input colorpicker="rgb" ng-model="rgbPicker.color" type="text">
-<div class="panel panel-default">
-        <div class="panel-heading">rgb: {{ rgbPicker.color }}</div>
-        <div class="panel-body">
-          <div class='row'>
-            <div class='col-sm-6'>
-              <p>
-                <button class="btn btn-primary" ng-click="resetRBGColor()">Update Model</button>
-              </p>
-              <input colorpicker="rgb" class="form-control" ng-model="rgbPicker.color" type="text" />
-            </div>
 
-            <div class='col-sm-6'>
-              <pre>&lt;input colorpicker="rgb" ng-model="rgbPicker.color" type="text"&gt;</pre>
-            </div>
-          </div>
-        </div>
-      </div>
 <div>Enter your chip ID!</div>
 <div class="row">
  <div class="col s2 grey settings">
@@ -118,13 +110,13 @@ function select(id){
 </script>
 
 
-<script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+
 <script type="text/javascript">
 var o;
-$(document).ready(function() 
+//$(document).ready(function() 
 {
 //pasghetti
-	setInterval(function() 
+	/**setInterval(function() 
 	{
 	
 	function checkchip()
@@ -151,8 +143,8 @@ $(document).ready(function()
 		
 		
 		
-	},2000);
-});
+	//},2000); **/
+//}); 
 </script>
 
 <script type="text/javascript">
