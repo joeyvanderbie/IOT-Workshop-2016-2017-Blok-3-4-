@@ -12,6 +12,7 @@
 
   <script src="js/jscolor.js"></script>
   <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <script src="js/pixelselector.js"></script>
 
   <nav class="navbar navbar-light bg-faded">
 	  <a class="navbar-brand" href="#">
@@ -26,13 +27,10 @@
 	  <input type="text" class="form-control" id="chip-id" placeholder="e.g. 1111">
   </div>
   <input class="form-control jscolor{value:'ab2567'}" onchange="update(this.jscolor)">
-  <script>
-	function update(jscolor) {
-	    // 'jscolor' instance can be used as a string
-	    document.getElementById('11').style.backgroundColor = '#' + jscolor;
-    	console.log(<?= json_encode('NOT WORKING'); ?>);
-    }
-</script>
+
+  <script type="text/javascript">
+	
+  </script>
 
   <button class="btn btn-primary" >Submit</button>
   </div>
@@ -47,7 +45,7 @@
 		echo "<div class='row pixel-row'>";
 	   for ($y = 1; $y <= 6; $y++) {
 	   	$id = $x*5+$y+1*$count;
-	    echo "<div id='".$id."' onclick=toggle_element('".$id."') class='card pixel'>".$id." </div>";
+	    echo "<div id='".$id."'class='card pixel'>".$id." </div>";
 		} 
 		$count++;
 		echo "</div>";
@@ -90,23 +88,23 @@
 </div>
 
 <script type="text/javascript">
-function select(id){
- if(document.getElementById(id).getAttribute("state") == "selected"){
-    document.getElementById(id).style.background='#D8D8D8';
-    document.getElementById(id).setAttribute("state", null);
-  }
-  else{
-    var elements = document.getElementsByClassName("col s1 grey");
-    for(var i = 0; i < elements.length; i++){
-      if(elements[i].getAttribute("state") == "selected"){
-        elements[i].style.background='#D8D8D8';
-        elements[i].setAttribute("state", null);
-      }
-    }
-    document.getElementById(id).setAttribute("state", "selected");
-    document.getElementById(id).style.background='#0080FF';
-  }
+for (var i = 1; i <=36; i++) {
+  $('#'+i).hover(function() {
+    $( this ).addClass( 'pixel-hover' );
+  }, function() {
+    $( this ).removeClass( 'pixel-hover');
+  });
+
+  $('#'+i).click(function() {
+   $( '.pixel-selected').removeClass('pixel-selected');
+   $( this ).addClass( 'pixel-selected' );
+});
 }
+
+function update(jscolor) {
+      // 'jscolor' instance can be used as a string
+      $( '.pixel-selected').css('background-color', '#' + jscolor);
+    }
 </script>
 
 
@@ -114,7 +112,7 @@ function select(id){
 <script type="text/javascript">
 var o;
 //$(document).ready(function() 
-{
+//{
 //pasghetti
 	/**setInterval(function() 
 	{

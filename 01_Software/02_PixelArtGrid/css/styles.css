@@ -2,6 +2,10 @@ body {
 	font-family: 'Roboto', sans-serif;
 }
 
+.fuck-this{
+	background-color: pink;
+}
+
 .navbar-brand{
 	font-family: "Unica One";
 	font-size: 32px;
@@ -23,12 +27,12 @@ body {
 }
 
 .pixel-selected {
-	border-color: blue;
+	border-width:  4px;
 
 }
 
 .pixel-hover {
-	border-color: orange;
+	border-width:  4px;
 }
 
 .pixel-disabled {
