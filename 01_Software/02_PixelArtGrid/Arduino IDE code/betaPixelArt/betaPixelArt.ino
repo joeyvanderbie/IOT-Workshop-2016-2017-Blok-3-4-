@@ -13,7 +13,13 @@
 #define CONFIG_SSID "icu"
 #define BACKUP_SSID "VGV75198714B3"
 #define BACKUP_PASSWORD "wNSY4GMMpzPP"
-#define REQUEST_DELAY 5000
+#define REQUEST_DELAY 500
+
+boolean isReady = false;
+String internalTimer;
+String externalTimer;
+int intTimer = 0;
+int exTimer = 99999999;
 
 
 int oldTime = 0;
@@ -29,6 +35,7 @@ Serial.println(String(PROJECT_SHORT_NAME)+ ":" + message);
 
 void setup()
 {
+  
   pinMode(BUTTONLOW_PIN, OUTPUT);
 
   digitalWrite(BUTTONLOW_PIN, LOW);
@@ -65,46 +72,24 @@ void loop()
   //Every requestDelay, send a request to the server
   if (millis() > oldTime + REQUEST_DELAY)
   {
-   getColor();
-   isSetupReady();
-    oldTime = millis();
+    if(!isReady){
+    getColor();
+    isSetupReady();
+    } else {
+      // is internal epoch == api call to current epoch?
+      Serial.println("setup complete");
+      isTimerSynced();
+      Serial.println(intTimer);
+      Serial.println(exTimer);
+      if(intTimer <= exTimer){
+        Serial.println("LIGHTS SHOULD GO ON NOW");
+        intTimer = 0;
+        isReady = false;
+      }
+    }
+  oldTime = millis();
   }
 }
-
-// api:ss inserts a 1 into the database
-// api:rs checks if there is a 1 in the database, column test_message ; row message(TEXT)
-
-void requestMessage(){
-// ask the API if there is something in the DB, and recieve the meme supreme message
-// in the API delete the thing from the DB so it doesn't keep on recieving
- HTTPClient http;
-  String requestString = serverURL + "/api.php?t=rs"; // look up api index, action is 
-  http.begin(requestString);
-  int httpCode = http.GET();
-  
-  if (httpCode == 200)
-  {
-    String response;
-    response = http.getString();
-
-    if (response == "-1") // this part still isn't working correctly, unless I do: echo $response;
-    {
-      // I can never get here, buggy stuff
-    printDebugMessage("There are no messages waiting in the queue");
-    }
-    else
-    {
-      // tells you that you have got the chip or the dip lmao FK I'M HILARIOUS
-      String thing = response.substring(0, 5);
-      printDebugMessage(response);
-    }
-  }
-    else {
-    //  ESP.reset();
-      Serial.println("Resetting cause everything broke");
-    } 
-    http.end();
-    }
 
     String generateChipID()
 {
@@ -158,18 +143,20 @@ void requestMessage(){
   {
     String response;
     response = http.getString();
-
     if (response == "-1")
     {
     printDebugMessage("There are no messages waiting in the queue");
     }
     else {
-      String ready = response.substring(0, 5);
-      printDebugMessage(response);
+      int firstComma = response.indexOf(',');
+      // timer
+      String ready = response.substring(0, 1); // if 1 it is ready
       if (ready == "1"){
-       // if ready start the timer and activate TimerSyncMethod
+      internalTimer = response.substring(firstComma + 1, response.length());
+      intTimer = internalTimer.toInt();
+      isReady = true;
       }
-      // start internal timer
+      Serial.println(response);
     }
   }
     
@@ -180,7 +167,8 @@ void requestMessage(){
       
             HTTPClient http;
             // request timer from server
-  String requestString = serverURL + "ADDAPICALLHERE";
+                  // epochtime save in variable, then in isTimerSynced ask if internal epochtime == server epochtime
+  String requestString = serverURL + "/Pixel_Art_Timer.php";
   http.begin(requestString);
   int httpCode = http.GET();
   
@@ -193,12 +181,9 @@ void requestMessage(){
     {
       // I can never get here, buggy stuff
     printDebugMessage("There are no messages waiting in the queue");
-    }
-    else
-    {
-      // string color = response = gonna be the color you receiver for you chipid
-      String timer = response.substring(0, 5);
-      printDebugMessage(response);
+    } else {
+      externalTimer = response.substring(0, response.length());
+      exTimer = externalTimer.toInt();
     }
   }
       
