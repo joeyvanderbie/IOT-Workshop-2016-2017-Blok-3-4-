@@ -122,9 +122,8 @@ void loop()
       String color = response.substring(0, 5);
       String ready = response.substring(firstComma + 1, secondComma);
       String internalTimer = response.substring(secondComma + 1, response.length());
-      Serial.println(color);
-      Serial.println(ready);
-      Serial.println(internalTimer);
+      intTimer = internalTimer.toInt();
+      Serial.println(intTimer);
      // save String color into a variable color
       if (ready == "1"){
         isReady = true;
@@ -147,7 +146,6 @@ void loop()
            {
              String externalTimer = response.substring(0, response.length());
              exTimer = externalTimer.toInt();
-            // Serial.println(exTimer);
            }
        }
     }
