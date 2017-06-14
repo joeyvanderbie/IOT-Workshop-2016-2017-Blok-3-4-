@@ -3,10 +3,9 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 #include <WiFiManager.h>
-
+#include <Adafruit_NeoPixel.h>
 // almost all of this should be in a config file [config.h]
 #define DEBUG_MODE
-#define BUTTON_PIN  D1
 #define BUTTONLOW_PIN D0
 #define PROJECT_SHORT_NAME "ICU"
 #define SERVER_URL "http://oege.ie.hva.nl/~palr001/icu"
@@ -14,13 +13,16 @@
 #define BACKUP_SSID "VGV75198714B3"
 #define BACKUP_PASSWORD "wNSY4GMMpzPP"
 #define REQUEST_DELAY 800
+#define PIN D1
 
 
 //add variable for ledstrip color || also add variables for brightness & duration?
 boolean isReady = false; // tells the box if it can turn on the ledstrip
 int intTimer = 999999999999; // epoch time + 10 [gets the real epoch time + 10 seconds]
 int exTimer = 0; // will be equal to the realtime epoch time
+String ledStripColor;
 
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, PIN, NEO_GRB + NEO_KHZ800);
 
 int oldTime = 0;
 String ChipID;
@@ -35,7 +37,8 @@ Serial.println(String(PROJECT_SHORT_NAME)+ ":" + message);
 
 void setup()
 {
-  
+  strip.begin();
+  strip.show();
   pinMode(BUTTONLOW_PIN, OUTPUT);
 
   digitalWrite(BUTTONLOW_PIN, LOW);
@@ -123,6 +126,8 @@ void loop()
       String ready = response.substring(firstComma + 1, secondComma);
       String internalTimer = response.substring(secondComma + 1, response.length());
       intTimer = internalTimer.toInt();
+      ledStripColor = color; //hex
+      
       Serial.println(intTimer);
      // save String color into a variable color
       if (ready == "1"){
