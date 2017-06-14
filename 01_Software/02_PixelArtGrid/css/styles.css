@@ -2,15 +2,35 @@ body {
 	font-family: 'Roboto', sans-serif;
 }
 
-.fuck-this{
-	background-color: pink;
+.site-container {
+	margin-top: 20px;
 }
+
+
 
 .navbar-brand{
 	font-family: "Unica One";
 	font-size: 32px;
 	font-style: bold;
 } 
+ 
+#chipid-form, #submit-button, #color-picker {
+	display:none;
+}
+
+.btn {
+	margin-top: 20px;
+	
+}
+
+.invisible-btn, .invisible-btn:hover, .invisible-btn:selected {
+	background-color: transparent;
+	border-color: transparent;
+	height: 80px;
+	width: 80px;
+}
+
+
 .pixel-row, .coordinate-row {
 	display:flex;
 	flex-direction: row;
@@ -21,6 +41,16 @@ body {
 	display:flex;
 	flex-direction: column;
 	justify-content: center;
+}
+
+.pixel-y-coordinate, .pixel-x-coordinate{
+	display: flex;
+    justify-content:center;
+    align-content:center;
+    flex-direction:column;
+}
+.pixel:focus {
+    outline: none;
 }
 
 .pixel, .pixel-y-coordinate, .pixel-x-coordinate {
@@ -45,9 +75,9 @@ body {
 }
 
 .pixel-grid {
-	padding: 40px;
+	padding-right: 120px;
 }
 
 .settings-panel {
-	padding: 40px;
+
 }
