@@ -22,20 +22,8 @@
 <!--nav-bar ends here-->
 
 <div class="row col-12 site-container">
-<!--settings panel for setting color and chip-id (temporary solution) starts here-->
-<div class="col-3 settings-panel">
-  <div class="form-group" id="chipid-form">
-	  <label for="chipid">Enter your chip-ID!</label>
-	  <input type="text" class="form-control setting-option" id="chip-id" placeholder="e.g. 1111">
-  </div>
-    <!--simple color picker, see http://jscolor.com/ for more information-->
-  <input class="form-control setting-option jscolor {mode:'HS'}" id="color-picker" value="ab2567" onchange="update(this.jscolor)">
-  <button class="btn btn-primary setting-option" id="submit-button" onclick="onSubmitButtonClicked()">Submit</button>
-
-
+<div class="col-3">
 </div>
-<!--settings-panel ends here-->
-
 <!--container for grid field and coordinates starts here-->
 <div class="pixel-grid text-center col-6">
 
@@ -48,7 +36,7 @@
     echo "<div class='pixel-y-coordinate text-center'>".(6-$x)."</div>";
 	   for ($y = 1; $y <= 6; $y++) {
 	   	$id = $x*5+$y+1*$count;
-	    echo "<button id='".$id."' class='card pixel jscolor {valueElement:null}'></button>";
+	    echo "<button id='".$id."' class='card pixel'></button>";
 		} 
 		$count++;
 		echo "</div>";
@@ -70,18 +58,18 @@
 
 <!--container for information on pixel that has the own chipid -->
 <div class="col-3">
-<div class="card">
+<!-- card for saved pixel -->
+<div class="card" id="own-data-display-panel">
   <div class="card-header">
     Your pixel!
   </div>
   <div class="card-block">
     <h4 class="card-title">This is your pixel!</h4>
-
     <div class="row">
       <div class="col-4">
       <div class="card pixel" id="own-pixel"></div>
       </div>
-      <div class="col-8">
+      <div class="col-8">     
       <div class="row">
         <p class="card-text">Chip-ID:</p>
         <p class="card-text" id="own-chip-id">none</p>
@@ -92,19 +80,55 @@
       </div>
       </div>
     </div>
-
     <button class="btn btn-primary" id="delete-pixel-button" onclick="onDeleteOwnPixelClicked()">Delete</button>
+    </div>
+  </div>
+
+<!--card for entering pixel data-->
+<div class="card" id="own-data-input-panel">
+  <div class="card-header">
+    Your pixel!
+  </div>
+  <div class="card-block form">
+    <h4 class="card-title">Select a pixel!</h4>
+    <div class="row">
+      <div class="col-4">
+      <button id="own-pixel-input" class='card pixel' onchange="update(this.jscolor)"></button>
+      </div>
+      <div class="col-8">   
+      <form>  
+      <div class="form-group" >
+      <label for="chipid">Enter your chip-ID!</label>
+      <input type="text" id="chip-id-input" class="form-control"  placeholder="e.g. 1111" disabled="true">
+      </div>
+      <input class="form-control setting-option jscolor {mode:'HS'}" value="ab2567" onchange="update(this.jscolor)" id="jscolor-picker" disabled="true">
+      </div>
+    </div>
+    <button class="btn btn-primary" id="submit-btn" onclick="onSubmitButtonClicked()" disabled="true">Submit</button>
+    </div>
   </div>
 </div>
+  
+  <div class="card" id="color-submit-panel"> 
+    <div class="card-block">
+  </div>
+
 </div>
-</div>
-<!--row with settings panel and grid ends here-->
 
 
 <!-- js script for hover-select and select-->
 <script type="text/javascript">
 
 var selectID, color, chipid, chipidIsSet = false, ownColor, ownCoordinates, ownID; 
+
+//disable submit button for empty chipid
+$("#chip-id-input").on("input", function() {
+  if ($('#chip-id-input').val().length > 0)
+    $('#submit-btn').prop( "disabled", false);   
+  else 
+    $('#submit-btn').prop( "disabled", true);   
+});
+
 
 //handle hover events on pixels
 for (var i = 1; i <=36; i++) {
@@ -116,15 +140,23 @@ for (var i = 1; i <=36; i++) {
 
   // handle click events on pixels
   $('#'+i).click(function() {
-    showSettingsPanel();
+
     $( '.pixel-selected').removeClass('pixel-selected');
     $( this ).addClass( 'pixel-selected' );
     //id of pixel
     selectID = $(this).attr('id');
-    console.log("here you find the selected ID" + selectID);
+
+    //if there is no chipid set for this particular user, leave option for doing so
+    if (!chipidIsSet) {
+      enablePixelPanel();
+      color = $(this).css("background-color");
+      document.getElementById('jscolor-picker').jscolor.fromString(color);
+      $( '#own-pixel-input').css('background-color', '#' + jscolor);
+    }
+    
+   
     //color of pixel in hex code
-    color = $(this).css("background-color");
-    document.getElementById('color-picker').jscolor.fromString(color);
+    
 });
 
 
@@ -148,20 +180,31 @@ for (var i = 1; i <=36; i++) {
     }
   }
 
+  function enablePixelPanel() {
+  
+      $('#chip-id-input').prop( "disabled", false);
+      $('#own-pixel-input').prop( "disabled", false );      
+      $('#jscolor-picker').prop( "disabled", false );       
+  }
+
+  function disablePixelPanel() {
+      $('#chip-id-input').prop( "disabled", true);
+      $('#own-pixel-input').prop( "disabled", true ); 
+      $('#submit-btn').prop( "disabled", true );      
+      $('#jscolor-picker').prop( "disabled", true );  
+  }
+
   function onSubmitButtonClicked() {
-    chipid = $('#chip-id').val();
-    if (chipid != null && !chipidIsSet) {
-      console.log("here you find all the information: " + selectID + ", " + color + ", " + chipid);
       chipidIsSet = true;
-      $( '#own-pixel').css('background-color', color);
-      $('#chip-id').val('');
-      hideSettingsPanel();
-      $('#own-chip-id').text(chipid);
+      chipid = $('#chip-id-input').val();
       ownID = $('.pixel-selected').attr('id');
+      color = $('#chip-id-input');
+      hideCard('own-pixel-input');
+      showCard('own-pixel-display');
+      $( '#own-pixel').css('background-color');
+      $('#own-chip-id').text(chipid);
       $('#own-coordinates').text(ownID);
-      } else if (chipidIsSet) {
-      hideSettingsPanel();
-    }
+      console.log("here you find all the information: " + selectID + ", " + color + ", " + chipid);
   }
 
   function onDeleteOwnPixelClicked() {
@@ -184,27 +227,16 @@ for (var i = 1; i <=36; i++) {
    if ($('.col-6').is(e.target) || $('.col-3').is(e.target))
     {
         $( '.pixel-selected').removeClass('pixel-selected');
-        hideSettingsPanel();
+        disablePixelPanel();
      }
   });
 
-  function hideSettingsPanel() {
-    $('.settings-panel').children().each(function () {
-    $(this).hide();
-    });
+  function showCard(cardID) {
+    $('#'+cardID).attr('display', 'none');
   }
 
-  function showSettingsPanel() {
-     $('.settings-panel').children().each(function () {
-      if (chipidIsSet && $(this).is($('#chipid-form'))) {
-        //do nothing because there already is a chipID set
-        console.log(chipidIsSet)
-      } else {
-        $(this).show();
-      }
-     
-
-    });
+  function hideCard(cardID) {
+    $('#'+cardID).attr('display', 'inline');
   }
 
 }
@@ -213,6 +245,8 @@ for (var i = 1; i <=36; i++) {
       // 'jscolor' instance can be used as a string
       color = '#' + jscolor;
       $( '.pixel-selected').css('background-color', '#' + jscolor);
+      $( '#own-pixel-input').css('background-color', '#' + jscolor);
+      console.log(color);
   }
 
 </script>

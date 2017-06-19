@@ -7,16 +7,12 @@ body {
 }
 
 
-
 .navbar-brand{
 	font-family: "Unica One";
 	font-size: 32px;
 	font-style: bold;
 } 
  
-#chipid-form, #submit-button, #color-picker {
-	display:none;
-}
 
 .btn {
 	margin-top: 20px;
@@ -28,6 +24,10 @@ body {
 	border-color: transparent;
 	height: 80px;
 	width: 80px;
+}
+
+#own-data-display-panel{
+	display:none;
 }
 
 
