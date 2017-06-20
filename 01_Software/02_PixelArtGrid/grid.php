@@ -104,6 +104,7 @@
       </div>
     </div>
     <button class="btn btn-primary" id="submit-btn" onclick="onSubmitButtonClicked()" disabled="true">Submit</button>
+	<button class="btn btn-primary" id="delete-pixel-button" onclick="functie()">Call ready php</button>
     </div>
   </div>
   
@@ -187,6 +188,23 @@ for (var i = 1; i <=36; i++) {
             return "#" + hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
         }
     }
+  }
+  
+  /*
+  function functie() {
+	var url1 = "ready.php?t=ins";
+	//combineer met Marc's timer
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("POST", url1, true);
+	xhttp.send();	
+	sleep(10);
+	var url2 = "ready.php?t=del";
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("POST", url2, true);
+	xhttp.send();	
+*/
+
+	
   }
 
   function enablePixelPanel() {
