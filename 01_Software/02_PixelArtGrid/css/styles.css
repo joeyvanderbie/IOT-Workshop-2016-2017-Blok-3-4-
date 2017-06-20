@@ -26,10 +26,13 @@ body {
 	width: 80px;
 }
 
-#own-data-display-panel{
-	display:none;
+#color-submit-panel {
+	margin-top: 20px;
 }
 
+#own-data-display-panel, #color-submit-panel{
+	display:none;
+}
 
 .pixel-row, .coordinate-row {
 	display:flex;

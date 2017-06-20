@@ -96,23 +96,23 @@
       <button id="own-pixel-input" class='card pixel' onchange="update(this.jscolor)"></button>
       </div>
       <div class="col-8">   
-      <form>  
       <div class="form-group" >
       <label for="chipid">Enter your chip-ID!</label>
       <input type="text" id="chip-id-input" class="form-control"  placeholder="e.g. 1111" disabled="true">
       </div>
-      <input class="form-control setting-option jscolor {mode:'HS'}" value="ab2567" onchange="update(this.jscolor)" id="jscolor-picker" disabled="true">
+      <input class="form-control jscolor {mode:'HS'}" value="ab2567" onchange="update(this.jscolor)" id="jscolor-picker" disabled="true">
       </div>
     </div>
     <button class="btn btn-primary" id="submit-btn" onclick="onSubmitButtonClicked()" disabled="true">Submit</button>
     </div>
   </div>
-</div>
   
-  <div class="card" id="color-submit-panel"> 
-    <div class="card-block">
+<div class="form group" id="color-submit-panel"> 
+    <p class="">Select a pixel to change its color!</p>
+    <input class="form-control jscolor {mode:'HS'}" value="ab2567" onchange="update(this.jscolor)" id="jscolor-picker-general" disabled="true">
+     <button class="btn btn-primary" id="color-submit-btn" onclick="onColorSubmitButtonClicked()" disabled="true">Submit</button>
+    </div>
   </div>
-
 </div>
 
 
@@ -152,6 +152,11 @@ for (var i = 1; i <=36; i++) {
       color = $(this).css("background-color");
       document.getElementById('jscolor-picker').jscolor.fromString(color);
       $( '#own-pixel-input').css('background-color', '#' + jscolor);
+    } else {
+       color = $(this).css("background-color");
+      document.getElementById('jscolor-picker-general').jscolor.fromString(color)
+      $('#color-submit-btn').prop( "disabled", false);     
+      $('#jscolor-picker-general').prop( "disabled", false );      
     }
     
    
@@ -194,27 +199,52 @@ for (var i = 1; i <=36; i++) {
       $('#jscolor-picker').prop( "disabled", true );  
   }
 
+  function onColorSubmitButtonClicked() {
+    //TODO: send data (chipid/selectid? and color) to server and update db
+  }
+
   function onSubmitButtonClicked() {
       chipidIsSet = true;
       chipid = $('#chip-id-input').val();
       ownID = $('.pixel-selected').attr('id');
-      color = $('#chip-id-input');
-      hideCard('own-pixel-input');
-      showCard('own-pixel-display');
-      $( '#own-pixel').css('background-color');
+      color = $('#jscolor-picker').css('background-color');
+
+      $( '#own-pixel').css('background-color', color);
       $('#own-chip-id').text(chipid);
       $('#own-coordinates').text(ownID);
+
       console.log("here you find all the information: " + selectID + ", " + color + ", " + chipid);
+
+      hideCard('#own-data-input-panel');
+      showCard('#own-data-display-panel');
+      showCard('#color-submit-panel');
+
+      //TODO: send data(chipid and color) to server and update db
   }
 
   function onDeleteOwnPixelClicked() {
+
+     //TODO: send data (chipid) to server and update db
     
     $( '#'+ownID).css('background-color', '#fff');
-    $('#own-chip-id').text('none');
-    $('#own-coordinates').text('none');
-    $( '#own-pixel').css('background-color', '#fff');
+
+    $('#chip-id-input').val();
+    $('.pixel-selected').attr('id');
+    document.getElementById('jscolor-picker').jscolor.fromString('#FFFFFF');
+    $('#own-pixel-input').css('background-color', '#fff');
+
+    $('#own-chip-id').text('');
+    $('#own-coordinates').text('');
     $( '#own-pixel').css('background-color', '#fff');
 
+    document.getElementById('jscolor-picker-general').jscolor.fromString('#FFFFFF');
+
+
+    showCard('#own-data-input-panel');
+    hideCard('#own-data-display-panel');
+    hideCard('#color-submit-panel');
+
+    $('#chip-id-input').val('');   
     chipidIsSet = false;
     chipid = null;
     ownID = null;
@@ -227,16 +257,23 @@ for (var i = 1; i <=36; i++) {
    if ($('.col-6').is(e.target) || $('.col-3').is(e.target))
     {
         $( '.pixel-selected').removeClass('pixel-selected');
-        disablePixelPanel();
+
+        if(!chipidIsSet) {
+           disablePixelPanel();
+        } else {
+          $('#color-submit-btn').prop( "disabled", true);     
+          $('#jscolor-picker-general').prop( "disabled", true );      
+        }
+       
      }
   });
 
   function showCard(cardID) {
-    $('#'+cardID).attr('display', 'none');
+    $(cardID).show();
   }
 
   function hideCard(cardID) {
-    $('#'+cardID).attr('display', 'inline');
+    $(cardID).hide();
   }
 
 }
@@ -249,16 +286,10 @@ for (var i = 1; i <=36; i++) {
       console.log(color);
   }
 
-</script>
-<!-- js script for hover-select and select ends here-->
 
 
-<script type="text/javascript">
 var o;
-//$(document).ready(function() 
-//{
-//pasghetti
-	/**setInterval(function() 
+setInterval(function() 
 	{
 	
 	function checkchip()
@@ -285,9 +316,10 @@ var o;
 		
 		
 		
-	//},2000); **/
-//}); 
+	},2000); 
+}); 
 </script>
+<!-- js script for selection and input handling ends here-->s
 
 <script type="text/javascript">
 function toggle_element(element)
