@@ -120,23 +120,20 @@ function select(id){
 
 <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
-var o;
 $(document).ready(function() 
 {
-//pasghetti
-	setInterval(function() 
-	{
-	
+getStuff();
+});
+function getStuff(){
 	function checkchip()
 	{
-		for (var i =0; i <= 35; i++)
+		for (var i = 0; i <= 35; i++)
 		{
 			if ( typeof users[i].chipid === 'undefined' || !users[i].chipid)
 			{
 			document.getElementById(i+1).style.background='#e01111';
 			} else 
 				{
-			//document.getElementById(i+1).style.background='#4286f4';
 			document.getElementById(i+1).style.background=users[i].color;
 				}
 		}
@@ -144,15 +141,10 @@ $(document).ready(function()
 		function callback(msg)
 		{
 			users = JSON.parse(msg);
-			//console.log(JSON.stringify(users));
 			checkchip();
 		}
-		o = $.ajax({type:"GET", url:"getuser.php"}).done(callback).fail(function(msg){console.log("ka niet");});
-		
-		
-		
-	},2000);
-});
+		var o = $.ajax({type:"GET", url:"getuser.php"}).done(callback).fail(function(msg){console.log("ka niet");});		
+	}
 </script>
 
 <script type="text/javascript">
