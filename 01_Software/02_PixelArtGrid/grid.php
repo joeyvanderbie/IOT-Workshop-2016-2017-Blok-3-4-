@@ -118,6 +118,10 @@
 
 <!-- js script for hover-select and select-->
 <script type="text/javascript">
+$(document).ready(function() 
+{
+getStuff();
+});
 
 var selectID, color, chipid, chipidIsSet = false, ownColor, ownCoordinates, ownID; 
 
@@ -199,8 +203,17 @@ for (var i = 1; i <=36; i++) {
       $('#jscolor-picker').prop( "disabled", true );  
   }
 
-  function onColorSubmitButtonClicked() {
-    //TODO: send data (chipid/selectid? and color) to server and update db
+  function onColorSubmitButtonClicked() 
+  {
+	ownID = $('.pixel-selected').attr('id');
+	$( '#own-pixel').css('background-color', color);
+	var color_withoutMark = color.substring(1,7);
+	var url = "store_color.php?t=upd&position=" + ownID + "&color=" + color_withoutMark;
+	console.log(url);
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("POST", url, true);
+	xhttp.send();	
+	getStuff();
   }
 
   function onSubmitButtonClicked() {
@@ -220,12 +233,29 @@ for (var i = 1; i <=36; i++) {
       showCard('#color-submit-panel');
 
       //TODO: send data(chipid and color) to server and update db
+	   //Conexion with the DB
+	  var color_withoutMark = color.substring(1,7);
+	  console.log(color_withoutMark);
+	  var url = "store_color.php?t=ins&position=" + selectID + "&chipid=" + chipid + "&color=" + color_withoutMark;
+	  console.log(url);
+	  var xhttp = new XMLHttpRequest();
+	  xhttp.open("POST", url, true);
+	  xhttp.send();
+	  getStuff();
   }
 
   function onDeleteOwnPixelClicked() {
 
      //TODO: send data (chipid) to server and update db
-    
+    ownID = $('.pixel-selected').attr('id');
+	
+	var url = "store_color.php?t=del&position=" + ownID;
+	console.log(url);
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("POST", url, true);
+	xhttp.send(); 
+	getStuff();
+	
     $( '#'+ownID).css('background-color', '#fff');
 
     $('#chip-id-input').val();
@@ -286,22 +316,16 @@ for (var i = 1; i <=36; i++) {
       console.log(color);
   }
 
-
-
-var o;
-setInterval(function() 
-	{
-	
+function getStuff(){
 	function checkchip()
 	{
-		for (var i =0; i <= 35; i++)
+		for (var i = 0; i <= 35; i++)
 		{
 			if ( typeof users[i].chipid === 'undefined' || !users[i].chipid)
 			{
-			document.getElementById(i+1).style.background='#e01111';
+			document.getElementById(i+1).style.background='#FFFFFF';
 			} else 
 				{
-			//document.getElementById(i+1).style.background='#4286f4';
 			document.getElementById(i+1).style.background=users[i].color;
 				}
 		}
@@ -309,15 +333,10 @@ setInterval(function()
 		function callback(msg)
 		{
 			users = JSON.parse(msg);
-			//console.log(JSON.stringify(users));
 			checkchip();
 		}
-		o = $.ajax({type:"GET", url:"getuser.php"}).done(callback).fail(function(msg){console.log("ka niet");});
-		
-		
-		
-	},2000); 
-}); 
+		var o = $.ajax({type:"GET", url:"getuser.php"}).done(callback).fail(function(msg){console.log("ka niet");});		
+	}
 </script>
 <!-- js script for selection and input handling ends here-->s
 
