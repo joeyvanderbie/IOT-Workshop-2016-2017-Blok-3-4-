@@ -3,24 +3,27 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 #include <WiFiManager.h>
-
+#include <Adafruit_NeoPixel.h>
 // almost all of this should be in a config file [config.h]
 #define DEBUG_MODE
-#define BUTTON_PIN  D1
 #define BUTTONLOW_PIN D0
 #define PROJECT_SHORT_NAME "ICU"
 #define SERVER_URL "http://oege.ie.hva.nl/~palr001/icu"
 #define CONFIG_SSID "icu"
 #define BACKUP_SSID "VGV75198714B3"
 #define BACKUP_PASSWORD "wNSY4GMMpzPP"
-#define REQUEST_DELAY 800
+#define PIN D1
 
 
 //add variable for ledstrip color || also add variables for brightness & duration?
+int REQUEST_DELAY;
 boolean isReady = false; // tells the box if it can turn on the ledstrip
 int intTimer = 999999999999; // epoch time + 10 [gets the real epoch time + 10 seconds]
 int exTimer = 0; // will be equal to the realtime epoch time
+String ledStripColor;
+uint32_t number;
 
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, PIN, NEO_GRB + NEO_KHZ800);
 
 int oldTime = 0;
 String ChipID;
@@ -35,7 +38,9 @@ Serial.println(String(PROJECT_SHORT_NAME)+ ":" + message);
 
 void setup()
 {
-  
+  REQUEST_DELAY = 350;
+  strip.begin();
+  strip.show();
   pinMode(BUTTONLOW_PIN, OUTPUT);
 
   digitalWrite(BUTTONLOW_PIN, LOW);
@@ -45,20 +50,6 @@ void setup()
   WiFiManager wifiManager;
   int counter = 0;
 
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-
-  while (digitalRead(BUTTON_PIN) == LOW)
-  {
-    counter++;
-    delay(10);
-
-    if (counter > 500)
-    {
-      wifiManager.resetSettings();
-      printDebugMessage("Remove all wifi settings!");
-      ESP.reset();
-    }
-  }
   hotspot.begin(BACKUP_SSID, BACKUP_PASSWORD);
 
   ChipID = generateChipID();
@@ -72,17 +63,24 @@ void loop()
   if (millis() > oldTime + REQUEST_DELAY)
   {
     if(isReady != true){
+      REQUEST_DELAY = 350;
     receiveVariables();
     } else {
+      REQUEST_DELAY = 200;
       Serial.println("setup complete");
       isTimerSynced();
       if(intTimer <= exTimer){
         Serial.println("LIGHTS SHOULD GO ON NOW");
+        oscillate(number);
         intTimer = 0;
         isReady = false;
       }
     }
   oldTime = millis();
+  }
+  if(isReady == false){
+    delay(2000);
+    oscillate(0);
   }
 }
 
@@ -119,12 +117,18 @@ void loop()
        int secondComma = response.indexOf(',', firstComma + 1);
  
       // string color = response = gonna be the color you receiver for you chipid
-      String color = response.substring(0, 5);
+      String color = response.substring(0, 7);
+      Serial.println(color);
       String ready = response.substring(firstComma + 1, secondComma);
       String internalTimer = response.substring(secondComma + 1, response.length());
-      Serial.println(color);
-      Serial.println(ready);
-      Serial.println(internalTimer);
+      intTimer = internalTimer.toInt();
+      ledStripColor = color; //hex
+      number = (uint32_t) strtol( &response[1], NULL, 16);
+      Serial.println(response[1]);
+      Serial.println(number);
+      
+      
+      Serial.println(intTimer);
      // save String color into a variable color
       if (ready == "1"){
         isReady = true;
@@ -132,6 +136,27 @@ void loop()
     }
   }
     }
+
+
+  //This method starts an oscillation movement in both the LED and servo
+void oscillate(uint32_t c)
+{
+  byte red = (c >> 16) & 0xff;
+  byte green = (c >> 8) & 0xff;
+  byte blue = c & 0xff;
+  uint32_t color0 = strip.Color(red, green, blue);
+  for(uint16_t i=0; i<8; i++) {
+      strip.setPixelColor(i, color0);
+      strip.show();
+   }
+   
+/*
+  spring.c = springConstant;
+  spring.k = dampConstant / 100;
+  spring.perturb(255);*/
+ //fadeBrightness(red, green, blue, 255 / 255.0);
+}
+    
     
     void isTimerSynced()
     {
@@ -147,8 +172,6 @@ void loop()
            {
              String externalTimer = response.substring(0, response.length());
              exTimer = externalTimer.toInt();
-            // Serial.println(exTimer);
            }
        }
     }
-
