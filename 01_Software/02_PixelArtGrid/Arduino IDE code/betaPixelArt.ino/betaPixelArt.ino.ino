@@ -73,13 +73,14 @@ void loop()
         Serial.println("LIGHTS SHOULD GO ON NOW");
         oscillate(number);
         intTimer = 0;
+        delay(7000);
         isReady = false;
       }
     }
   oldTime = millis();
   }
   if(isReady == false){
-    delay(2000);
+    //delay(2000);
     oscillate(0);
   }
 }
