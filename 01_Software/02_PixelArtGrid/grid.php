@@ -20,7 +20,7 @@
 	  </a>
   </nav>
 <!--nav-bar ends here-->
-
+<button class="btn btn-primary" id="delete-pixel-button" onclick="checkTimer()">Start</button>
 <div class="row col-12 site-container">
 <div class="col-3">
 </div>
@@ -104,14 +104,13 @@
       </div>
     </div>
     <button class="btn btn-primary" id="submit-btn" onclick="onSubmitButtonClicked()" disabled="true">Submit</button>
-	<button class="btn btn-primary" id="delete-pixel-button" onclick="functie()">Call ready php</button>
     </div>
   </div>
   
 <div class="form group" id="color-submit-panel"> 
     <p class="">Select a pixel to change its color!</p>
-    <input class="form-control jscolor {mode:'HS'}" value="ab2567" onchange="update(this.jscolor)" id="jscolor-picker-general" disabled="true">
-     <button class="btn btn-primary" id="color-submit-btn" onclick="onColorSubmitButtonClicked()" disabled="true">Submit</button>
+    <input class="form-control jscolor {mode:'HS'}" value="ab2567" onchange="update(this.jscolor)" id="jscolor-picker-general" >
+     <button class="btn btn-primary" id="color-submit-btn" onclick="onColorSubmitButtonClicked()" >Submit</button>
     </div>
   </div>
 </div>
@@ -189,23 +188,6 @@ for (var i = 1; i <=36; i++) {
         }
     }
   }
-  
-  /*
-  function functie() {
-	var url1 = "ready.php?t=ins";
-	//combineer met Marc's timer
-	var xhttp = new XMLHttpRequest();
-	xhttp.open("POST", url1, true);
-	xhttp.send();	
-	sleep(10);
-	var url2 = "ready.php?t=del";
-	var xhttp = new XMLHttpRequest();
-	xhttp.open("POST", url2, true);
-	xhttp.send();	
-*/
-
-	
-  }
 
   function enablePixelPanel() {
   
@@ -214,6 +196,23 @@ for (var i = 1; i <=36; i++) {
       $('#jscolor-picker').prop( "disabled", false );       
   }
 
+  
+  function checkTimer(){
+	var url = "ready.php?t=ins";
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("POST", url, true);
+	xhttp.send();
+	var delayMillis = 15000; //1 second
+	console.log(url);
+
+	setTimeout(function() {
+		url = "ready.php?t=del";
+		console.log(url);
+		xhttp.open("POST", url, true);
+		xhttp.send();
+	}, delayMillis);
+  }
+  
   function disablePixelPanel() {
       $('#chip-id-input').prop( "disabled", true);
       $('#own-pixel-input').prop( "disabled", true ); 
